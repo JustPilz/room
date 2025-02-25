@@ -111,7 +111,7 @@
   	  setTimeout(function() { // таймер-планировщик
     document.getElementById('btn-click_rooms').click(); // вызвать клик на кнопку Помещения
   }, 99); // через ? секунды
-  	} 
+  	}
   </script>
   <script>
 // вкладка Развертки стен
@@ -121,10 +121,10 @@
   	  setTimeout(function() { // таймер-планировщик
     document.getElementById('btn-click_projections').click(); // вызвать клик на кнопку Помещения
   }, 99); // через ? секунды
-  	} 
+  	}
   </script>
   <script>
-// печать документа							
+// печать документа
   	function clickEvent() {
   		var element = document.getElementById('SvgjsG1012');
   		var element2 = document.getElementById('SvgjsG1352');
@@ -150,13 +150,13 @@
  }
 </script>
 <script>
-// функции перзагрузки страницу	
+// функции перзагрузки страницу
 	function saveAndReload() {
 		if (confirm('Вы действительно хотите обновить страницу? Все несохраненные данные будут потеряны.')) {
  // Здесь можно добавить код для сохранения данных
  // Например, localStorage.setItem('key', 'value');
 			location.reload();
-			
+
 		}
 	}
 </script>
@@ -354,7 +354,7 @@
 				<div class="tools_item toolid1407 security_water_panel show_on_security " id="plannertool_water_leakage_panel" onclick="select_tool('water_leakage_panel');">Панель контроля протечки</div>
 				<div class="tools_item toolid1406 security_water_sensor show_on_security " id="plannertool_water_leakage_sensor" onclick="select_tool('water_leakage_sensor');">Датчик протечки воды</div>
 				<div class="tools_item toolid1404 security_alarm show_on_security " id="plannertool_alarm_panel" onclick="select_tool('alarm_panel');">Панель сигнализации</div> <a onclick="load_v2_modal_from_id('extended_tools_modal');" class="tools_more_item show_on_furniture">Еще наборы предметов</a>
-				<a class="tools_help_item" onclick="window.open('/support/help.html')">Помощь по программе</a>
+				<!-- <a class="tools_help_item" onclick="window.open('/support/help.html')">Помощь по программе</a> -->
 			</div>
 		</div>
 		<div class="planner_ui_subtools" data-parent="group14">
@@ -2555,7 +2555,7 @@
 			<div id="footer_bar">
 				<div id="footer_bar_navi">
 					<div id="footer_bar_folders">
-						<a class="footer_bar_folder dir_help strong" onclick="window.open('/support/help.html')">Помощь<span> по планировщику</a>
+						<!-- <a class="footer_bar_folder dir_help strong" onclick="window.open('/support/help.html')">Помощь по планировщику</a> -->
 							<div id="prepan_promo_wrapper" class="display_none display_inline_on_init">
 							</div>
 							<div class="footer_bar_folder dir_plan strong" onclick="focus_file_input();">Построить план по картинке</div>
