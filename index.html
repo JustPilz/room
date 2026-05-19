@@ -44,6 +44,7 @@
 	<script src="/files/js/v2/app/planner.tools___13___1722349909.js?1724128515"></script>
 	<script src="/files/js/v2/app/planner.l10n___5___1719915083.js?1724128515"></script>
 	<script src="/files/js/v2/app/planner.svg___6___1717160538.js?1724128515"></script>
+	<script src="/files/js/fixture_options.js?1724128515"></script>
 	<script src="/files/js/v2/app/app.3.0___82___1723808709.min.js"></script>
 	<script src="/files/js/saveSvgAsPng.js"></script>
 	<script src="/files/js/v2/app/interface___5___1720782485.js?1724128515"></script>
@@ -2067,6 +2068,23 @@
 					<h2 class="equipment_title">Комплектация</h2>
 					<button type="button" id="equipment_refresh" class="equipment_refresh">Обновить</button>
 				</div>
+				<div class="equipment_settings">
+					<label for="equipment_default_color">Цвет по умолчанию:</label>
+					<select id="equipment_default_color">
+						<option value="white_glossy">Белый глянцевый</option>
+						<option value="white_matte">Белый матовый</option>
+						<option value="cashmere">Кашемир</option>
+						<option value="silk">Шелк</option>
+						<option value="steel">Сталь</option>
+						<option value="titanium">Титан</option>
+						<option value="graphite">Графит</option>
+						<option value="black_matte">Черный матовый</option>
+						<option value="denim">Деним</option>
+						<option value="cotton">Хлопок</option>
+						<option value="cappuccino">Капучино</option>
+						<option value="gray">Серый</option>
+					</select>
+				</div>
 				<p id="equipment_empty" class="equipment_empty_state" style="display:none;">Нет настенных розеток и выключателей</p>
 				<section class="equipment_section">
 					<h3 class="equipment_section_title">Розетки</h3>
@@ -3318,6 +3336,36 @@
 									<span>ОК</span><em class="project-units">см</em>
 								</div>
 							</div>
+							<div class="contextmenu_item textinput fixture-settings">
+								Класс:
+								<div class="contextmenu_item_input">
+									<select id="cm-socket--class" name="">
+										<option value="main">Основной</option>
+										<option value="technical">Технический</option>
+										<option value="premium">Премиальный</option>
+									</select>
+								</div>
+							</div>
+							<div class="contextmenu_item textinput fixture-settings">
+								Цвет:
+								<div class="contextmenu_item_input">
+									<select id="cm-socket--color" name="">
+										<option value="default">По умолчанию</option>
+										<option value="white_glossy">Белый глянцевый</option>
+										<option value="white_matte">Белый матовый</option>
+										<option value="cashmere">Кашемир</option>
+										<option value="silk">Шелк</option>
+										<option value="steel">Сталь</option>
+										<option value="titanium">Титан</option>
+										<option value="graphite">Графит</option>
+										<option value="black_matte">Черный матовый</option>
+										<option value="denim">Деним</option>
+										<option value="cotton">Хлопок</option>
+										<option value="cappuccino">Капучино</option>
+										<option value="gray">Серый</option>
+									</select>
+								</div>
+							</div>
 							<div class="contextmenu_item switch pointer cm-item--size_casing">
 								<div class="footer_bar_tool_switch active"><span></span></div>
 								Показать расстояния
@@ -3363,6 +3411,36 @@
 								<div class="contextmenu_item_input">
 									<input class="numeric" id="cm-switch--over-floor" type="text" maxlength="5" value="" />
 									<span>ОК</span><em class="project-units">см</em>
+								</div>
+							</div>
+							<div class="contextmenu_item textinput fixture-settings">
+								Класс:
+								<div class="contextmenu_item_input">
+									<select id="cm-switch--class" name="">
+										<option value="main">Основной</option>
+										<option value="technical">Технический</option>
+										<option value="premium">Премиальный</option>
+									</select>
+								</div>
+							</div>
+							<div class="contextmenu_item textinput fixture-settings">
+								Цвет:
+								<div class="contextmenu_item_input">
+									<select id="cm-switch--color" name="">
+										<option value="default">По умолчанию</option>
+										<option value="white_glossy">Белый глянцевый</option>
+										<option value="white_matte">Белый матовый</option>
+										<option value="cashmere">Кашемир</option>
+										<option value="silk">Шелк</option>
+										<option value="steel">Сталь</option>
+										<option value="titanium">Титан</option>
+										<option value="graphite">Графит</option>
+										<option value="black_matte">Черный матовый</option>
+										<option value="denim">Деним</option>
+										<option value="cotton">Хлопок</option>
+										<option value="cappuccino">Капучино</option>
+										<option value="gray">Серый</option>
+									</select>
 								</div>
 							</div>
 							<div class="contextmenu_item icons"><em>Действия:</em>

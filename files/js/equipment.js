@@ -64,8 +64,39 @@
 		return toolTitle(SWITCH_TITLE_ALIASES[toolName] || toolName);
 	}
 
+	function fixtureSummary(props) {
+		if (window.fixture_options && fixture_options.summary) {
+			return fixture_options.summary(props || {});
+		}
+		return {
+			classValue: 'main',
+			classTitle: 'Основной',
+			colorValue: 'white_glossy',
+			colorTitle: 'Белый глянцевый',
+			key: 'main|white_glossy',
+			suffix: ' — Основной — Белый глянцевый'
+		};
+	}
+
+	function equipmentTitle(title, props) {
+		return title + fixtureSummary(props).suffix;
+	}
+
 	function incMap(map, key, n) {
 		map[key] = (map[key] || 0) + (n || 1);
+	}
+
+	function incFrame(map, posts, props) {
+		var fixture = fixtureSummary(props);
+		var key = posts + '|' + fixture.key;
+		if (!map[key]) {
+			map[key] = {
+				posts: posts,
+				count: 0,
+				fixtureSuffix: fixture.suffix
+			};
+		}
+		map[key].count += 1;
 	}
 
 	function sortMapEntries(map) {
@@ -77,10 +108,12 @@
 	}
 
 	function sortFrameEntries(map) {
-		return Object.keys(map).map(Number).sort(function (a, b) {
-			return a - b;
-		}).map(function (posts) {
-			return { posts: posts, count: map[posts] };
+		return Object.keys(map).map(function (key) {
+			var row = map[key];
+			if (row && typeof row === 'object') return row;
+			return { posts: Number(key), count: row, fixtureSuffix: '' };
+		}).sort(function (a, b) {
+			return a.posts - b.posts || a.fixtureSuffix.localeCompare(b.fixtureSuffix, 'ru');
 		});
 	}
 
@@ -137,18 +170,18 @@
 			if (posts <= 0) continue;
 			totalPosts += posts;
 			if (switchTools[sub.name]) {
-				var title = countTitle(sub.name);
+				var title = equipmentTitle(countTitle(sub.name), props);
 				incMap(switches, title, 1);
 				incMap(roomBucket.switches, title, 1);
 			} else if (socketTools[sub.name]) {
-				var title = toolTitle(sub.name);
+				var title = equipmentTitle(toolTitle(sub.name), props);
 				incMap(sockets, title, 1);
 				incMap(roomBucket.sockets, title, 1);
 			}
 		}
 		if (totalPosts > 0) {
-			frames[totalPosts] = (frames[totalPosts] || 0) + 1;
-			roomBucket.frames[totalPosts] = (roomBucket.frames[totalPosts] || 0) + 1;
+			incFrame(frames, totalPosts, props);
+			incFrame(roomBucket.frames, totalPosts, props);
 		}
 	}
 
@@ -160,16 +193,16 @@
 		if (posts <= 0) return;
 		var roomBucket = getRoomBucket(rooms, item);
 		if (switchTools[name]) {
-			var title = countTitle(name);
+			var title = equipmentTitle(countTitle(name), props);
 			incMap(switches, title, 1);
 			incMap(roomBucket.switches, title, 1);
 		} else if (socketTools[name]) {
-			var title = toolTitle(name);
+			var title = equipmentTitle(toolTitle(name), props);
 			incMap(sockets, title, 1);
 			incMap(roomBucket.sockets, title, 1);
 		}
-		frames[posts] = (frames[posts] || 0) + 1;
-		roomBucket.frames[posts] = (roomBucket.frames[posts] || 0) + 1;
+		incFrame(frames, posts, props);
+		incFrame(roomBucket.frames, posts, props);
 	}
 
 	window.getEquipmentSummary = function () {
@@ -249,7 +282,7 @@
 		var totalPosts = 0;
 		for (var i = 0; i < frameEntries.length; i++) {
 			var row = frameEntries[i];
-			var label = postsLabel(row.posts);
+			var label = postsLabel(row.posts) + (row.fixtureSuffix || '');
 			html += '<li><span class="equipment_name">' + label +
 				'</span><span class="equipment_count">' + row.count + ' шт.</span></li>';
 			totalFrames += row.count;
