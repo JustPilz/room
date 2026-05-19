@@ -47,7 +47,8 @@
 	<script src="/files/js/v2/app/app.3.0___82___1723808709.min.js"></script>
 	<script src="/files/js/saveSvgAsPng.js"></script>
 	<script src="/files/js/v2/app/interface___5___1720782485.js?1724128515"></script>
-	<script src="/files/js/v2/app/subprojects___1___1717151865.js?1724128515"></script> <meta name="yandex-verification" content="699999a24f1b21dd" />
+	<script src="/files/js/v2/app/subprojects___1___1717151865.js?1724128515"></script>
+	<script src="/files/js/equipment.js?1724128515"></script> <meta name="yandex-verification" content="699999a24f1b21dd" />
 	<meta name="p:domain_verify" content="bc3f1e525aed6b69be7218569cd38bd5"/>
 	<meta name="facebook-domain-verification" content="moqapf9v0jf3n1lyfxwyptof4k55ja" /></head>
 	<body class="lang_ru is_planner dir_planner " data-object-id="0" data-authkey="0" data-plan_id="" data-save_id="">
@@ -2058,6 +2059,31 @@
 				<a data-val="2">2 мм</a>
 				<a data-val="5">5 мм</a>
 				<a data-val="10">10 мм</a>
+			</div>
+		</div>
+		<div id="equipment_panel" class="display_none display_block_on_sockets display_block_on_light_connections">
+			<div class="equipment_panel_inner">
+				<div class="equipment_header">
+					<h2 class="equipment_title">Комплектация</h2>
+					<button type="button" id="equipment_refresh" class="equipment_refresh">Обновить</button>
+				</div>
+				<p id="equipment_empty" class="equipment_empty_state" style="display:none;">Нет настенных розеток и выключателей</p>
+				<section class="equipment_section">
+					<h3 class="equipment_section_title">Розетки</h3>
+					<div id="equipment_sockets"></div>
+				</section>
+				<section class="equipment_section">
+					<h3 class="equipment_section_title">Выключатели</h3>
+					<div id="equipment_switches"></div>
+				</section>
+				<section class="equipment_section">
+					<h3 class="equipment_section_title">Рамки</h3>
+					<div id="equipment_frames"></div>
+				</section>
+				<section class="equipment_section equipment_rooms_section">
+					<h3 class="equipment_section_title">По помещениям</h3>
+					<div id="equipment_rooms"></div>
+				</section>
 			</div>
 		</div>
 		<div id="planner_ui_options_wrapper">
