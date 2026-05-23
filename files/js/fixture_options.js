@@ -26,6 +26,22 @@
 		{ value: 'default', title: 'По умолчанию' }
 	].concat(COLORS);
 
+	var SHUTTERS = [
+		{ value: 'with_shutters', title: 'Со шторками' },
+		{ value: 'without_shutters', title: 'Без шторок' }
+	];
+
+	var SOCKET_TOOLS = {
+		socket: 1,
+		socket_ip44: 1,
+		socket_tv: 1,
+		socket_ip: 1,
+		socket_usb: 1,
+		socket_hdmi: 1,
+		socket_audio: 1,
+		socket_phone: 1
+	};
+
 	var ALLOWED_TOOLS = {
 		socket: 1,
 		socket_ip44: 1,
@@ -48,6 +64,7 @@
 
 	var DEFAULT_CLASS = CLASSES[0];
 	var DEFAULT_COLOR = COLOR_OPTIONS[0];
+	var DEFAULT_SHUTTERS = SHUTTERS[0];
 	var DEFAULT_SETTINGS = {
 		default_color: {
 			value: COLORS[0].value,
@@ -90,6 +107,10 @@
 		return !!(name && ALLOWED_TOOLS[name]);
 	}
 
+	function isSocketTool(name) {
+		return !!(name && SOCKET_TOOLS[name]);
+	}
+
 	function isAllowedItem(props) {
 		var group = props && props.socket_group;
 		if (props && props.name === 'socket_group' && group && group.length) {
@@ -99,6 +120,17 @@
 			return false;
 		}
 		return !!(props && isAllowedTool(props.name));
+	}
+
+	function isSocketItem(props) {
+		var group = props && props.socket_group;
+		if (props && props.name === 'socket_group' && group && group.length) {
+			for (var i = 0; i < group.length; i++) {
+				if (group[i] && isSocketTool(group[i].name)) return true;
+			}
+			return false;
+		}
+		return !!(props && isSocketTool(props.name));
 	}
 
 	function ensureItem(props) {
@@ -115,12 +147,19 @@
 				title: DEFAULT_COLOR.title
 			};
 		}
+		if (isSocketItem(props) && (!props.fixture_shutters || !props.fixture_shutters.value)) {
+			props.fixture_shutters = {
+				value: DEFAULT_SHUTTERS.value,
+				title: DEFAULT_SHUTTERS.title
+			};
+		}
 		return true;
 	}
 
 	function summary(props) {
 		var classOption = fieldValue(props, 'fixture_class', CLASSES);
 		var colorOption = fieldValue(props, 'fixture_color', COLOR_OPTIONS);
+		var shuttersOption = fieldValue(props, 'fixture_shutters', SHUTTERS);
 		var outputColor = colorOption.value === 'default' ? defaultColor() : colorOption;
 		return {
 			classValue: classOption.value,
@@ -129,6 +168,9 @@
 			colorTitle: outputColor.title,
 			rawColorValue: colorOption.value,
 			rawColorTitle: colorOption.title,
+			shuttersValue: shuttersOption.value,
+			shuttersTitle: shuttersOption.title,
+			shuttersSuffix: ' — ' + shuttersOption.title,
 			key: classOption.value + '|' + outputColor.value,
 			suffix: ' — ' + classOption.title + ' — ' + outputColor.title
 		};
@@ -147,6 +189,7 @@
 		fillSelect('cm-switch--class', CLASSES);
 		fillSelect('cm-socket--color', COLOR_OPTIONS);
 		fillSelect('cm-switch--color', COLOR_OPTIONS);
+		fillSelect('cm-socket--shutters', SHUTTERS);
 	}
 
 	function setRowsVisible(menu, visible) {
@@ -156,7 +199,7 @@
 		}
 	}
 
-	function syncMenuForItem(item, menu, classId, colorId) {
+	function syncMenuForItem(item, menu, classId, colorId, shuttersId) {
 		var props = item && item.props;
 		if (!props || !ensureItem(props)) {
 			setRowsVisible(menu, false);
@@ -166,12 +209,15 @@
 		setRowsVisible(menu, true);
 		document.getElementById(classId).value = fieldValue(props, 'fixture_class', CLASSES).value;
 		document.getElementById(colorId).value = fieldValue(props, 'fixture_color', COLOR_OPTIONS).value;
+		if (shuttersId) {
+			document.getElementById(shuttersId).value = fieldValue(props, 'fixture_shutters', SHUTTERS).value;
+		}
 	}
 
 	function syncItemContextmenu(item, menu) {
 		fillSelects();
 		if (menu === '#cm-socket') {
-			syncMenuForItem(item, '#cm-socket', 'cm-socket--class', 'cm-socket--color');
+			syncMenuForItem(item, '#cm-socket', 'cm-socket--class', 'cm-socket--color', 'cm-socket--shutters');
 		} else if (menu === '#cm-switch') {
 			syncMenuForItem(item, '#cm-switch', 'cm-switch--class', 'cm-switch--color');
 		}
@@ -180,7 +226,8 @@
 	function changeFixtureField(target) {
 		var isClassField = target.id === 'cm-socket--class' || target.id === 'cm-switch--class';
 		var isColorField = target.id === 'cm-socket--color' || target.id === 'cm-switch--color';
-		if (!isClassField && !isColorField) return;
+		var isShuttersField = target.id === 'cm-socket--shutters';
+		if (!isClassField && !isColorField && !isShuttersField) return;
 
 		var menu = target.closest ? target.closest('.contextmenu') : null;
 		var itemId = menu && menu.getAttribute('data-item_id');
@@ -193,6 +240,8 @@
 			setField(props, 'fixture_class', CLASSES, target.value);
 		} else if (isColorField) {
 			setField(props, 'fixture_color', COLOR_OPTIONS, target.value);
+		} else if (isShuttersField && isSocketItem(props)) {
+			setField(props, 'fixture_shutters', SHUTTERS, target.value);
 		}
 
 		if (window.project && project.localSave) project.localSave();
@@ -247,8 +296,11 @@
 		classes: CLASSES,
 		colors: COLORS,
 		colorOptions: COLOR_OPTIONS,
+		shutters: SHUTTERS,
 		isAllowedTool: isAllowedTool,
+		isSocketTool: isSocketTool,
 		isAllowedItem: isAllowedItem,
+		isSocketItem: isSocketItem,
 		ensureItem: ensureItem,
 		summary: summary,
 		syncItemContextmenu: syncItemContextmenu,

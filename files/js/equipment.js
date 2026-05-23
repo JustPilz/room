@@ -73,6 +73,9 @@
 			classTitle: 'Основной',
 			colorValue: 'white_glossy',
 			colorTitle: 'Белый глянцевый',
+			shuttersValue: 'with_shutters',
+			shuttersTitle: 'Со шторками',
+			shuttersSuffix: ' — Со шторками',
 			key: 'main|white_glossy',
 			suffix: ' — Основной — Белый глянцевый'
 		};
@@ -80,6 +83,11 @@
 
 	function equipmentTitle(title, props) {
 		return title + fixtureSummary(props).suffix;
+	}
+
+	function socketEquipmentTitle(title, props) {
+		var fixture = fixtureSummary(props);
+		return title + fixture.suffix + fixture.shuttersSuffix;
 	}
 
 	function incMap(map, key, n) {
@@ -174,7 +182,7 @@
 				incMap(switches, title, 1);
 				incMap(roomBucket.switches, title, 1);
 			} else if (socketTools[sub.name]) {
-				var title = equipmentTitle(toolTitle(sub.name), props);
+				var title = socketEquipmentTitle(toolTitle(sub.name), props);
 				incMap(sockets, title, 1);
 				incMap(roomBucket.sockets, title, 1);
 			}
@@ -197,7 +205,7 @@
 			incMap(switches, title, 1);
 			incMap(roomBucket.switches, title, 1);
 		} else if (socketTools[name]) {
-			var title = equipmentTitle(toolTitle(name), props);
+			var title = socketEquipmentTitle(toolTitle(name), props);
 			incMap(sockets, title, 1);
 			incMap(roomBucket.sockets, title, 1);
 		}
