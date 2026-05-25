@@ -54,39 +54,43 @@
 	}
 
 	function toolTitle(toolName) {
+		var title = toolName;
 		if (window.tools && tools[toolName] && tools[toolName].title) {
-			return tools[toolName].title;
+			title = tools[toolName].title;
 		}
-		return toolName;
+		if (title === 'Стандартная розетка' || title === 'Стандартная розетка 220В') {
+			return 'Розетка';
+		}
+		return title;
 	}
 
 	function countTitle(toolName) {
 		return toolTitle(SWITCH_TITLE_ALIASES[toolName] || toolName);
 	}
 
-	function fixtureSummary(props) {
+	function fixtureSummary(props, includeShutters) {
 		if (window.fixture_options && fixture_options.summary) {
-			return fixture_options.summary(props || {});
+			return fixture_options.summary(props || {}, includeShutters);
 		}
 		return {
 			classValue: 'main',
-			classTitle: 'Основной',
-			colorValue: 'white_glossy',
-			colorTitle: 'Белый глянцевый',
+			classTitle: 'Основная',
+			colorValue: 'white_matte',
+			colorTitle: 'Белый матовый',
 			shuttersValue: 'with_shutters',
 			shuttersTitle: 'Со шторками',
-			shuttersSuffix: ' — Со шторками',
-			key: 'main|white_glossy',
-			suffix: ' — Основной — Белый глянцевый'
+			shuttersSuffix: ', Со шторками',
+			key: 'main|white_matte',
+			suffix: ', Основная, Белый матовый'
 		};
 	}
 
 	function equipmentTitle(title, props) {
-		return title + fixtureSummary(props).suffix;
+		return title + fixtureSummary(props, false).suffix;
 	}
 
 	function socketEquipmentTitle(title, props) {
-		var fixture = fixtureSummary(props);
+		var fixture = fixtureSummary(props, true);
 		return title + fixture.suffix + fixture.shuttersSuffix;
 	}
 
@@ -95,7 +99,7 @@
 	}
 
 	function incFrame(map, posts, props) {
-		var fixture = fixtureSummary(props);
+		var fixture = fixtureSummary(props, false);
 		var key = posts + '|' + fixture.key;
 		if (!map[key]) {
 			map[key] = {
@@ -278,6 +282,10 @@
 		return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	}
 
+	function frameEntryTitle(row) {
+		return postsLabel(row.posts) + (row.fixtureSuffix || '');
+	}
+
 	function buildFramesHtml(frameEntries) {
 		if (!frameEntries.length) {
 			return {
@@ -290,7 +298,7 @@
 		var totalPosts = 0;
 		for (var i = 0; i < frameEntries.length; i++) {
 			var row = frameEntries[i];
-			var label = postsLabel(row.posts) + (row.fixtureSuffix || '');
+			var label = frameEntryTitle(row);
 			html += '<li><span class="equipment_name">' + label +
 				'</span><span class="equipment_count">' + row.count + ' шт.</span></li>';
 			totalFrames += row.count;
@@ -402,6 +410,78 @@
 		}
 	};
 
+	function equipmentExportRows() {
+		var summary = window.getEquipmentSummary();
+		var rows = [];
+		var socketEntries = sortMapEntries(summary.sockets);
+		var switchEntries = sortMapEntries(summary.switches);
+		var frameEntries = sortFrameEntries(summary.frames);
+
+		for (var i = 0; i < socketEntries.length; i++) {
+			rows.push(['Розетки', socketEntries[i].title, socketEntries[i].count]);
+		}
+		for (var j = 0; j < switchEntries.length; j++) {
+			rows.push(['Выключатели', switchEntries[j].title, switchEntries[j].count]);
+		}
+		for (var k = 0; k < frameEntries.length; k++) {
+			rows.push(['Рамки', frameEntryTitle(frameEntries[k]), frameEntries[k].count]);
+		}
+		return rows;
+	}
+
+	function csvCell(value) {
+		var s = String(value == null ? '' : value);
+		return '"' + s.replace(/"/g, '""') + '"';
+	}
+
+	function pad(n) {
+		return n < 10 ? '0' + n : String(n);
+	}
+
+	function exportDate() {
+		var d = new Date();
+		return pad(d.getDate()) + '-' + pad(d.getMonth() + 1) + '-' + d.getFullYear() + ' ' +
+			pad(d.getHours()) + '-' + pad(d.getMinutes()) + '-' + pad(d.getSeconds());
+	}
+
+	function downloadCsv(rows) {
+		var csv = '\ufeff' + [['Раздел', 'Наименование', 'Количество']].concat(rows).map(function (row) {
+			return row.map(csvCell).join(';');
+		}).join('\r\n');
+		var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+		var filename = 'Комплектация розеток и выключателей ' + exportDate() + '.csv';
+		if (window.navigator && navigator.msSaveOrOpenBlob) {
+			navigator.msSaveOrOpenBlob(blob, filename);
+			return;
+		}
+		var urlApi = window.URL || window.webkitURL;
+		var url = urlApi && urlApi.createObjectURL ?
+			urlApi.createObjectURL(blob) :
+			'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+		var link = document.createElement('a');
+		link.href = url;
+		link.download = filename;
+		link.style.display = 'none';
+		document.body.appendChild(link);
+		if (document.createEvent) {
+			var event = document.createEvent('MouseEvents');
+			event.initMouseEvent('click', false, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+			link.dispatchEvent(event);
+		} else {
+			link.click();
+		}
+		document.body.removeChild(link);
+		if (urlApi && urlApi.revokeObjectURL && url.indexOf('data:') !== 0) {
+			setTimeout(function () {
+				urlApi.revokeObjectURL(url);
+			}, 0);
+		}
+	}
+
+	window.exportEquipment = function () {
+		downloadCsv(equipmentExportRows());
+	};
+
 	$(function () {
 		var panel = document.getElementById('equipment_panel');
 		var canvas = document.getElementById('canvas');
@@ -411,6 +491,17 @@
 
 		$(document).on('click', '#equipment_refresh', function () {
 			window.refreshEquipment();
+		});
+
+		$(document).on('mousedown touchstart', '#equipment_export', function (event) {
+			event.stopPropagation();
+		});
+
+		$(document).on('click', '#equipment_export', function (event) {
+			event.preventDefault();
+			event.stopPropagation();
+			window.exportEquipment();
+			return false;
 		});
 
 		$(document).on(

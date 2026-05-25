@@ -220,7 +220,7 @@
 				<div class="tools_item toolid416 root_group hyg show_on_santeh has_subtools " data-target="group416" >Смесители и душ</div>
 				<div class="tools_item toolid435 root_group towel show_on_santeh has_subtools " data-target="group435" >Полотенцесушители</div>
 				<div class="tools_item toolid428 root_group bath_other show_on_santeh has_subtools " data-target="group428" >Аксессуары</div>
-				<div class="tools_item toolid20 socket1 show_on_sockets " data-tool-props='{&quot;electric&quot;: 1}' data-tool="electric_outlets" id="plannertool_socket" onclick="select_tool('socket');">Стандартная розетка 220В</div>
+				<div class="tools_item toolid20 socket1 show_on_sockets " data-tool-props='{&quot;electric&quot;: 1}' data-tool="electric_outlets" id="plannertool_socket" onclick="select_tool('socket');">Розетка</div>
 				<div class="tools_item toolid577 socket_group show_on_sockets " data-tool-props='{&quot;electric&quot;: 1}' data-tool="electric_outlets" id="plannertool_socket_group" onclick="select_tool('socket_group');">Группа розеток</div>
 				<div class="tools_item toolid189 socket_ip44 show_on_sockets " data-tool-props='{&quot;electric&quot;: 1, &quot;type&quot;: &quot;ip44&quot;}' data-tool="electric_outlets" id="plannertool_socket_ip44" onclick="select_tool('socket_ip44');">Розетка 220В с влагозащитой</div>
 				<div class="tools_item toolid560 root_group socket_tv show_on_sockets has_subtools " data-target="group560" >Слаботочные розетки</div>
@@ -2066,24 +2066,11 @@
 			<div class="equipment_panel_inner">
 				<div class="equipment_header">
 					<h2 class="equipment_title">Комплектация</h2>
-					<button type="button" id="equipment_refresh" class="equipment_refresh">Обновить</button>
 				</div>
-				<div class="equipment_settings">
-					<label for="equipment_default_color">Цвет по умолчанию:</label>
-					<select id="equipment_default_color">
-						<option value="white_glossy">Белый глянцевый</option>
-						<option value="white_matte">Белый матовый</option>
-						<option value="cashmere">Кашемир</option>
-						<option value="silk">Шелк</option>
-						<option value="steel">Сталь</option>
-						<option value="titanium">Титан</option>
-						<option value="graphite">Графит</option>
-						<option value="black_matte">Черный матовый</option>
-						<option value="denim">Деним</option>
-						<option value="cotton">Хлопок</option>
-						<option value="cappuccino">Капучино</option>
-						<option value="gray">Серый</option>
-					</select>
+				<div class="equipment_header">
+					<button type="button" id="equipment_open_settings" class="equipment_button">Настройки</button>
+					<button type="button" id="equipment_export" class="equipment_button">Экспорт</button>
+					<button type="button" id="equipment_refresh" class="equipment_refresh">Обновить</button>
 				</div>
 				<p id="equipment_empty" class="equipment_empty_state" style="display:none;">Нет настенных розеток и выключателей</p>
 				<section class="equipment_section">
@@ -2102,6 +2089,36 @@
 					<h3 class="equipment_section_title">По помещениям</h3>
 					<div id="equipment_rooms"></div>
 				</section>
+			</div>
+		</div>
+		<div id="equipment_settings_modal" class="equipment_modal" style="display:none;">
+			<div class="equipment_modal_dialog">
+				<button type="button" id="equipment_close_settings" class="equipment_modal_close" aria-label="Закрыть">&times;</button>
+				<h3 class="equipment_modal_title">Настройки комплектации</h3>
+				<div class="equipment_modal_row">
+					<label for="equipment_default_color_main">Цвет основных розеток по умолчанию:</label>
+					<select id="equipment_default_color_main" data-fixture-color="main"></select>
+				</div>
+				<div class="equipment_modal_row">
+					<label for="equipment_default_color_technical">Цвет технических розеток по умолчанию:</label>
+					<select id="equipment_default_color_technical" data-fixture-color="technical"></select>
+				</div>
+				<div class="equipment_modal_row">
+					<label for="equipment_default_color_premium">Цвет премиальных розеток по умолчанию:</label>
+					<select id="equipment_default_color_premium" data-fixture-color="premium"></select>
+				</div>
+				<div class="equipment_modal_row">
+					<label for="equipment_model_name_main">Название основных розеток:</label>
+					<input id="equipment_model_name_main" type="text" data-fixture-model="main" />
+				</div>
+				<div class="equipment_modal_row">
+					<label for="equipment_model_name_technical">Название технических розеток:</label>
+					<input id="equipment_model_name_technical" type="text" data-fixture-model="technical" />
+				</div>
+				<div class="equipment_modal_row">
+					<label for="equipment_model_name_premium">Название премиальных розеток:</label>
+					<input id="equipment_model_name_premium" type="text" data-fixture-model="premium" />
+				</div>
 			</div>
 		</div>
 		<div id="planner_ui_options_wrapper">
@@ -3337,12 +3354,12 @@
 								</div>
 							</div>
 							<div class="contextmenu_item textinput fixture-settings">
-								Класс:
+								Модель:
 								<div class="contextmenu_item_input">
 									<select id="cm-socket--class" name="">
-										<option value="main">Основной</option>
-										<option value="technical">Технический</option>
-										<option value="premium">Премиальный</option>
+										<option value="main">Основная</option>
+										<option value="technical">Техническая</option>
+										<option value="premium">Премиальная</option>
 									</select>
 								</div>
 							</div>
@@ -3423,12 +3440,12 @@
 								</div>
 							</div>
 							<div class="contextmenu_item textinput fixture-settings">
-								Класс:
+								Модель:
 								<div class="contextmenu_item_input">
 									<select id="cm-switch--class" name="">
-										<option value="main">Основной</option>
-										<option value="technical">Технический</option>
-										<option value="premium">Премиальный</option>
+										<option value="main">Основная</option>
+										<option value="technical">Техническая</option>
+										<option value="premium">Премиальная</option>
 									</select>
 								</div>
 							</div>
